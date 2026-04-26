@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Results - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0F1923] min-h-screen">
+    
+    <header class="bg-[#1E293B] border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between">
+            <div class="flex items-center space-x-6">
+                <h1 class="text-xl font-bold text-cyan-400 font-mono">📄 Results from: {{ upload.filename }}</h1>
+                <a href="/admin/uploads" class="text-gray-400 hover:text-white text-sm">← Uploads</a>
+            </div>
+            <a href="/admin/logout" class="text-red-400 text-sm">Logout</a>
+        </div>
+    </header>
+    
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <div class="mb-4 p-4 bg-[#1E293B] rounded-lg border border-gray-700 text-gray-300">
+            <p>Total Results: <span class="text-cyan-400 font-bold">{{ total }}</span> | Showing first 100</p>
+            <p>Status: 
+                {% if upload.status == 'done' %}
+                    <span class="text-teal-400">✅ Done</span>
+                {% elif upload.status == 'done_with_errors' %}
+                    <span class="text-amber-400">⚠️ {{ upload.success_count }}/{{ upload.total_rows }} rows</span>
+                {% else %}
+                    <span class="text-red-400">❌ {{ upload.status }}</span>
+                {% endif %}
+            </p>
+        </div>
+        
+        <div class="bg-[#1E293B] rounded-xl border border-gray-700 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-gray-700 text-gray-400">
+                        <th class="py-3 px-4 text-left">Hall Ticket</th>
+                        <th class="py-3 px-4 text-left">Semester</th>
+                        <th class="py-3 px-4 text-left">Subject Code</th>
+                        <th class="py-3 px-4 text-left">Subject</th>
+                        <th class="py-3 px-4 text-center">Credits</th>
+                        <th class="py-3 px-4 text-center">Grade</th>
+                        <th class="py-3 px-4 text-center">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in results %}
+                    <tr class="border-b border-gray-800 text-gray-300 hover:bg-gray-800/50">
+                        <td class="py-2 px-4 font-mono text-cyan-400">{{ r.hall_ticket }}</td>
+                        <td class="py-2 px-4">{{ r.semester }}</td>
+                        <td class="py-2 px-4 font-mono">{{ r.subject_code }}</td>
+                        <td class="py-2 px-4 text-xs text-gray-400">{{ r.subject_name }}</td>
+                        <td class="py-2 px-4 text-center">{{ r.credits }}</td>
+                        <td class="py-2 px-4 text-center">
+                            <span class="px-2 py-1 rounded text-xs font-bold 
+                                {% if r.grade in ['O','A+','A','B+','B'] %}bg-green-900 text-green-400
+                                {% elif r.grade == 'C' %}bg-amber-900 text-amber-400
+                                {% elif r.grade in ['F','AB'] %}bg-red-900 text-red-400
+                                {% else %}bg-gray-700 text-gray-400{% endif %}">
+                                {{ r.grade }}
+                            </span>
+                        </td>
+                        <td class="py-2 px-4 text-center font-mono">{{ r.grade_points }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

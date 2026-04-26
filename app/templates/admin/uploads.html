@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Uploads - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0F1923] min-h-screen">
+    
+    <header class="bg-[#1E293B] border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-6">
+                <h1 class="text-xl font-bold text-cyan-400 font-mono">📂 Manage Uploads</h1>
+                <a href="/admin/dashboard" class="text-gray-400 hover:text-white text-sm">← Dashboard</a>
+                <a href="/admin/students" class="text-gray-400 hover:text-white text-sm">Students</a>
+            </div>
+            <a href="/admin/logout" class="text-red-400 text-sm">Logout</a>
+        </div>
+    </header>
+    
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-teal-500/20 text-teal-400{% else %}bg-red-500/20 text-red-400{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="bg-[#1E293B] rounded-xl border border-gray-700 overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-700 text-gray-400 text-sm">
+                        <th class="py-4 px-6 text-left">ID</th>
+                        <th class="py-4 px-6 text-left">Filename</th>
+                        <th class="py-4 px-6 text-center">Total</th>
+                        <th class="py-4 px-6 text-center">Success</th>
+                        <th class="py-4 px-6 text-center">Errors</th>
+                        <th class="py-4 px-6 text-center">Status</th>
+                        <th class="py-4 px-6 text-center">Uploaded</th>
+                        <th class="py-4 px-6 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for upload in uploads %}
+                    <tr class="border-b border-gray-800 text-gray-300 hover:bg-gray-800/50">
+                        <td class="py-3 px-6 text-sm font-mono">{{ upload.id }}</td>
+                        <td class="py-3 px-6 text-cyan-400 text-sm">{{ upload.filename }}</td>
+                        <td class="py-3 px-6 text-center text-sm">{{ upload.total_rows or '-' }}</td>
+                        <td class="py-3 px-6 text-center text-teal-400 text-sm">{{ upload.success_count or '-' }}</td>
+                        <td class="py-3 px-6 text-center text-red-400 text-sm">{{ upload.error_count or '-' }}</td>
+                        <td class="py-3 px-6 text-center">
+                            {% if upload.status == 'done' %}
+                                <span class="text-teal-400 text-xs">✅ Done</span>
+                            {% elif upload.status == 'done_with_errors' %}
+                                <span class="text-amber-400 text-xs">⚠️ Partial</span>
+                            {% else %}
+                                <span class="text-red-400 text-xs">❌ {{ upload.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-6 text-center text-xs text-gray-500">{{ upload.uploaded_at.strftime('%d/%m/%y %H:%M') }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex justify-center space-x-2">
+                                <a href="/admin/uploads/{{ upload.id }}/results" 
+                                   class="text-blue-400 hover:text-blue-300 text-xs">View</a>
+                                <form method="POST" action="/admin/uploads/{{ upload.id }}/delete" 
+                                      onsubmit="return confirm('Delete this upload and ALL its results? This cannot be undone.')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="text-red-400 hover:text-red-300 text-xs">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="py-8 text-center text-gray-500">No uploads found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

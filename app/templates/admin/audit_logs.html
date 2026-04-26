@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#0F1923] min-h-screen">
+
+    <header class="bg-[#1E293B] border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-6">
+                <h1 class="text-xl font-bold text-cyan-400 font-mono">📋 Audit Logs</h1>
+                <a href="/admin/dashboard" class="text-gray-400 hover:text-white text-sm">← Dashboard</a>
+            </div>
+            <a href="/admin/logout" class="text-red-400 text-sm">Logout</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <div class="bg-[#1E293B] rounded-xl border border-gray-700 overflow-hidden">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-700 text-gray-400 text-sm">
+                        <th class="py-4 px-4 text-left">Timestamp</th>
+                        <th class="py-4 px-4 text-left">Actor</th>
+                        <th class="py-4 px-4 text-left">Event</th>
+                        <th class="py-4 px-4 text-left">IP Address</th>
+                        <th class="py-4 px-4 text-left">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs.items %}
+                    <tr class="border-b border-gray-800 text-gray-300 hover:bg-gray-800/50">
+                        <td class="py-3 px-4 text-xs font-mono text-gray-400">
+                            {{ log.created_at.strftime('%d/%m/%Y %H:%M:%S') }}
+                        </td>
+                        <td class="py-3 px-4 text-sm">
+                            <span
+                                class="{% if log.actor_type == 'admin' %}text-cyan-400{% else %}text-blue-400{% endif %}">
+                                {{ log.actor_type }}
+                            </span>
+                            {% if log.actor_id %}
+                            <span class="text-gray-500">#{{ log.actor_id }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 rounded text-xs font-mono
+                                {% if 'SUCCESS' in log.event_type or 'SUCCESS' in log.event_type|upper %}
+                                    bg-green-900 text-green-400
+                                {% elif 'FAIL' in log.event_type %}
+                                    bg-red-900 text-red-400
+                                {% elif 'LOCK' in log.event_type %}
+                                    bg-amber-900 text-amber-400
+                                {% else %}
+                                    bg-gray-700 text-gray-300
+                                {% endif %}">
+                                {{ log.event_type }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 font-mono text-xs text-gray-500">{{ log.ip_address }}</td>
+                        <td class="py-3 px-4 text-xs text-gray-500 font-mono">
+                            {% if log.extra_data %}
+                            {{ log.extra_data[:80] }}{% if log.extra_data|length > 80 %}...{% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-gray-500">No audit logs found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if logs.pages > 1 %}
+        <div class="flex justify-center mt-6 space-x-2">
+            {% if logs.has_prev %}
+            <a href="?page={{ logs.prev_num }}"
+                class="px-4 py-2 bg-[#1E293B] text-gray-300 rounded-lg hover:bg-gray-700">← Prev</a>
+            {% endif %}
+            <span class="px-4 py-2 text-gray-400">Page {{ logs.page }} of {{ logs.pages }}</span>
+            {% if logs.has_next %}
+            <a href="?page={{ logs.next_num }}"
+                class="px-4 py-2 bg-[#1E293B] text-gray-300 rounded-lg hover:bg-gray-700">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+</body>
+
+</html>

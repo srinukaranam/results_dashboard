@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Result Dashboard{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #0a0f14;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --cyan: #00D4FF;
+            --blue: #2563EB;
+            --teal: #14B8A6;
+            --amber: #F59E0B;
+            --red: #EF4444;
+            --text-primary: #e2e8f0;
+            --text-secondary: #8B949E;
+            --border-dark: rgba(0, 212, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.05);
+        }
+
+        .nav-blur {
+            background: rgba(10, 15, 20, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .cyber-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.05);
+            color: #00D4FF;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .cyber-btn:hover {
+            background: rgba(0, 212, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .cyber-btn.primary {
+            background: #2563EB;
+            border-color: #2563EB;
+            color: white;
+        }
+
+        .cyber-btn.primary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .cyber-btn.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .cyber-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .grade-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .grade-excellent {
+            background: rgba(5, 150, 105, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(5, 150, 105, 0.3);
+        }
+
+        .grade-good {
+            background: rgba(13, 148, 136, 0.2);
+            color: #2dd4bf;
+            border: 1px solid rgba(13, 148, 136, 0.3);
+        }
+
+        .grade-average {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .grade-poor {
+            background: rgba(234, 88, 12, 0.2);
+            color: #fb923c;
+            border: 1px solid rgba(234, 88, 12, 0.3);
+        }
+
+        .grade-fail {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        input,
+        select,
+        textarea {
+            background: rgba(15, 25, 35, 0.8);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00D4FF;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        label {
+            color: #8B949E;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0f14;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00D4FF;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- NAVBAR -->
+    <nav class="nav-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="/" class="text-cyan-400 font-mono font-bold hover:text-cyan-300 transition">◈ RDS</a>
+                <span class="hidden md:block text-gray-500 text-xs font-mono">{{ student.hall_ticket }}</span>
+            </div>
+            <div class="flex items-center space-x-1">
+                <a href="/student/dashboard"
+                    class="px-2 py-1 text-gray-400 hover:text-cyan-400 text-xs font-mono transition">Home</a>
+                <a href="/student/analytics"
+                    class="px-2 py-1 text-gray-400 hover:text-cyan-400 text-xs font-mono transition">Analytics</a>
+                <a href="/student/certificates"
+                    class="px-2 py-1 text-gray-400 hover:text-cyan-400 text-xs font-mono transition">Certs</a>
+                <a href="/student/notifications"
+                    class="px-2 py-1 text-gray-400 hover:text-cyan-400 text-xs font-mono transition">Alerts</a>
+                <a href="/student/profile"
+                    class="px-2 py-1 text-gray-400 hover:text-cyan-400 text-xs font-mono transition">Profile</a>
+                <a href="/auth/logout"
+                    class="px-2 py-1 text-red-400 hover:text-red-300 text-xs font-mono transition ml-2">Exit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="relative z-20 max-w-7xl mx-auto px-4 md:px-6 pt-4">
+        {% for category, message in messages %}
+        <div class="mb-2 p-3 rounded-lg border text-sm font-mono
+                        {% if category == 'success' %}bg-teal-900/30 border-teal-500 text-teal-300
+                        {% elif category == 'danger' %}bg-red-900/30 border-red-500 text-red-300
+                        {% elif category == 'warning' %}bg-amber-900/30 border-amber-500 text-amber-300
+                        {% else %}bg-blue-900/30 border-blue-500 text-blue-300{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <main class="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+
+</html>

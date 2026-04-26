@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Dashboard - JNTUK Secure Portal</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Scan Line Effect -->
+    <div class="scan-line"></div>
+
+    <!-- NAVBAR -->
+    <nav class="nav-blur fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">🛡️</span>
+                <span class="font-mono text-cyan-400 text-lg font-bold">ResultDashboard</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#features" class="text-gray-400 hover:text-cyan-400 transition text-sm">Features</a>
+                <a href="#how-it-works" class="text-gray-400 hover:text-cyan-400 transition text-sm">How It Works</a>
+                <a href="#grading" class="text-gray-400 hover:text-cyan-400 transition text-sm">Grading</a>
+                <a href="/auth/login" class="btn-cyan text-sm py-2 px-6">Student Login</a>
+                <a href="/admin/login" class="btn-blue text-sm py-2 px-6">Admin Access</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menuBtn" class="md:hidden text-cyan-400 text-2xl">☰</button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-[#0F1923] border-t border-gray-800 px-6 py-4 space-y-3">
+            <a href="#features" class="block text-gray-400 hover:text-cyan-400 text-sm">Features</a>
+            <a href="#how-it-works" class="block text-gray-400 hover:text-cyan-400 text-sm">How It Works</a>
+            <a href="#grading" class="block text-gray-400 hover:text-cyan-400 text-sm">Grading</a>
+            <a href="/auth/login" class="block btn-cyan text-sm text-center">Student Login</a>
+            <a href="/admin/login" class="block btn-blue text-sm text-center">Admin Access</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative z-10 min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="text-center max-w-4xl">
+            <!-- Terminal Badge -->
+            <div
+                class="inline-flex items-center gap-2 bg-[#1E293B] border border-gray-700 rounded-full px-4 py-2 mb-8 reveal">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="font-mono text-xs text-gray-400">SYSTEM ONLINE • JNTUK PORTAL v1.0</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-5xl md:text-7xl font-bold font-mono text-white mb-4 reveal reveal-delay-1">
+                <span class="glow-text">Result</span>
+                <br>
+                <span class="text-cyan-400">Dashboard</span>
+            </h1>
+
+            <!-- Typewriter Tagline -->
+            <p class="text-xl md:text-2xl text-gray-400 font-mono mb-2 reveal reveal-delay-2">
+                <span id="typewriter"></span><span class="typing-cursor"></span>
+            </p>
+
+            <p class="text-gray-500 mb-10 reveal reveal-delay-3 max-w-2xl mx-auto">
+                One upload → every student sees only their results.
+                Auto-calculated CGPA, smart analytics, and professional certificates.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center reveal reveal-delay-4">
+                <a href="/auth/register" class="btn-cyan text-lg">
+                    ⚡ Get Started
+                </a>
+                <a href="/auth/login" class="btn-blue text-lg">
+                    🔐 Student Login
+                </a>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="mt-16 animate-bounce">
+                <span class="text-cyan-400 text-2xl">↓</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="relative z-10 py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold font-mono text-center text-white mb-4 reveal">
+                <span class="text-cyan-400">&gt;</span> How It Works
+            </h2>
+            <div class="section-divider reveal"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mt-12">
+                <div class="pipeline-step cyber-card reveal reveal-delay-1">
+                    <div class="text-4xl mb-4">📤</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-2">Upload PDF</h3>
+                    <p class="text-gray-400 text-sm">Admin uploads JNTUK result PDF with all branches</p>
+                </div>
+
+                <div class="pipeline-step cyber-card reveal reveal-delay-2">
+                    <div class="text-4xl mb-4">⚙️</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-2">Parse & Store</h3>
+                    <p class="text-gray-400 text-sm">AI-powered parser extracts each student's data</p>
+                </div>
+
+                <div class="pipeline-step cyber-card reveal reveal-delay-3">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-2">Filter by PIN</h3>
+                    <p class="text-gray-400 text-sm">Students see only their results by hall ticket</p>
+                </div>
+
+                <div class="pipeline-step cyber-card reveal reveal-delay-4">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-2">View Dashboard</h3>
+                    <p class="text-gray-400 text-sm">CGPA analytics, certificates & notifications</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="relative z-10 py-20 px-6 bg-[#0a1219]">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold font-mono text-center text-white mb-4 reveal">
+                <span class="text-cyan-400">&gt;</span> Features
+            </h2>
+            <div class="section-divider reveal"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <!-- Feature 1 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-1">
+                    <div class="text-3xl mb-4">🔒</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">Secure Access</h3>
+                    <p class="text-gray-400 text-sm">Students only see their own data. bcrypt encryption, JWT sessions,
+                        CSRF protection.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-2">
+                    <div class="text-3xl mb-4">🧠</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">Smart Parsing</h3>
+                    <p class="text-gray-400 text-sm">Intelligent PDF parser handles multiple branches, semesters &
+                        supplementary results.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-3">
+                    <div class="text-3xl mb-4">📈</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">CGPA Analytics</h3>
+                    <p class="text-gray-400 text-sm">Auto-calculated SGPA/CGPA, trend charts, weak subject detection.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-1">
+                    <div class="text-3xl mb-4">📜</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">Certificate Generator</h3>
+                    <p class="text-gray-400 text-sm">Professional semester/year/final certificates with optional photo &
+                        fields.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-2">
+                    <div class="text-3xl mb-4">🔔</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">Notification System</h3>
+                    <p class="text-gray-400 text-sm">Instant alerts when new results are uploaded for your semester.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="cyber-card hover-lift reveal reveal-delay-3">
+                    <div class="text-3xl mb-4">📱</div>
+                    <h3 class="font-mono text-cyan-400 font-bold mb-3">Mobile First</h3>
+                    <p class="text-gray-400 text-sm">Fully responsive design optimized for mobile and desktop viewing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRADING SYSTEM -->
+    <section id="grading" class="relative z-10 py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold font-mono text-center text-white mb-4 reveal">
+                <span class="text-cyan-400">&gt;</span> JNTUK Grading System
+            </h2>
+            <div class="section-divider reveal"></div>
+
+            <div class="cyber-card reveal overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="py-4 px-6 font-mono text-cyan-400">Grade</th>
+                            <th class="py-4 px-6 font-mono text-cyan-400">Points</th>
+                            <th class="py-4 px-6 font-mono text-cyan-400">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-green-400">A+</td>
+                            <td class="py-3 px-6">10</td>
+                            <td class="py-3 px-6">Outstanding</td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-green-400">A</td>
+                            <td class="py-3 px-6">9</td>
+                            <td class="py-3 px-6">Excellent</td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-teal-400">B</td>
+                            <td class="py-3 px-6">8</td>
+                            <td class="py-3 px-6">Very Good</td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-amber-400">C</td>
+                            <td class="py-3 px-6">7</td>
+                            <td class="py-3 px-6">Good</td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-orange-400">D</td>
+                            <td class="py-3 px-6">6</td>
+                            <td class="py-3 px-6">Average</td>
+                        </tr>
+                        <tr class="border-b border-gray-800 hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-red-400">E</td>
+                            <td class="py-3 px-6">5</td>
+                            <td class="py-3 px-6">Below Average</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/30">
+                            <td class="py-3 px-6 font-mono text-red-600">F</td>
+                            <td class="py-3 px-6">0</td>
+                            <td class="py-3 px-6">Fail</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECH STACK -->
+    <section class="relative z-10 py-20 px-6 bg-[#0a1219]">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold font-mono text-white mb-4 reveal">
+                <span class="text-cyan-400">&gt;</span> Tech Stack
+            </h2>
+            <div class="section-divider reveal"></div>
+
+            <div class="flex flex-wrap justify-center gap-4 mt-8 reveal">
+                <span class="tech-pill">🐍 Python Flask</span>
+                <span class="tech-pill">🗄️ PostgreSQL/SQLite</span>
+                <span class="tech-pill">📄 pdfplumber</span>
+                <span class="tech-pill">🎨 Tailwind CSS</span>
+                <span class="tech-pill">📊 Chart.js</span>
+                <span class="tech-pill">📜 ReportLab</span>
+                <span class="tech-pill">🔒 bcrypt</span>
+                <span class="tech-pill">⚡ Vanilla JS</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 border-t border-gray-800 py-8 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="font-mono text-gray-500 text-sm mb-2">
+                JNTUK-Affiliated College, Kakinada, Andhra Pradesh
+            </p>
+            <p class="text-gray-600 text-xs">
+                © 2024 Result Dashboard System • All Rights Reserved • v1.0.0
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ============ MOBILE MENU TOGGLE ============
+        document.getElementById('menuBtn').addEventListener('click', function () {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        // ============ TYPEWRITER EFFECT ============
+        const phrases = [
+            'Your Results, Simplified.',
+            'One Upload. Individual Views.',
+            'Auto CGPA. Smart Analytics.',
+            'Secure. Fast. Professional.'
+        ];
+
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterEl = document.getElementById('typewriter');
+
+        function typeWriter() {
+            const currentPhrase = phrases[phraseIndex];
+
+            if (isDeleting) {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let speed = isDeleting ? 30 : 80;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                speed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                speed = 500;
+            }
+
+            setTimeout(typeWriter, speed);
+        }
+
+        typeWriter();
+
+        // ============ SCROLL REVEAL ============
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 100;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+
+        // ============ MATRIX RAIN EFFECT ============
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&<>/\\{}[]';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * canvas.height;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(15, 25, 35, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00D4FF';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // ============ SMOOTH SCROLL ============
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

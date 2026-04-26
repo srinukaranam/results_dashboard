@@ -1,0 +1,96 @@
+{% extends "student/base_student.html" %}
+{% block title %}Certificates - {{ student.full_name }}{% endblock %}
+
+{% block content %}
+
+<div class="mb-6">
+    <h1 class="text-2xl font-bold font-mono text-white">
+        <span class="text-cyan-400">&gt;</span> Generate Certificates
+    </h1>
+    <p class="text-gray-500 text-sm font-mono mt-1">Download professional result certificates</p>
+</div>
+
+<!-- Optional Fields -->
+<div class="glass-card p-6 mb-6">
+    <h3 class="font-mono text-cyan-400 font-bold mb-4">Optional Fields</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label>College Name</label>
+            <input type="text" id="college_name" placeholder="e.g., University College of Engineering">
+        </div>
+        <div>
+            <label>Father's Name</label>
+            <input type="text" id="father_name" placeholder="Enter father's name">
+        </div>
+        <div>
+            <label>Mother's Name</label>
+            <input type="text" id="mother_name" placeholder="Enter mother's name">
+        </div>
+        <div>
+            <label>Date of Birth</label>
+            <input type="date" id="dob">
+        </div>
+    </div>
+</div>
+
+<!-- Semester Certificates -->
+<div class="glass-card p-6 mb-6">
+    <h3 class="font-mono text-cyan-400 font-bold mb-4">📋 Semester Certificates</h3>
+    {% if completed_semesters %}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {% for sem in completed_semesters %}
+        <button onclick="generateCert('semester', '{{ sem }}')" class="cyber-btn text-center">
+            Sem {{ sem }}<br><span class="text-xs opacity-60">Download PDF</span>
+        </button>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8 font-mono text-sm">No results available</p>
+    {% endif %}
+</div>
+
+<!-- Year Certificates -->
+<div class="glass-card p-6 mb-6">
+    <h3 class="font-mono text-cyan-400 font-bold mb-4">📅 Year Certificates</h3>
+    {% if years %}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {% for year in years %}
+        <button onclick="generateCert('year', '{{ year }}')" class="cyber-btn text-center">
+            Year {{ year }}<br><span class="text-xs opacity-60">Download PDF</span>
+        </button>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500 text-center py-8 font-mono text-sm">No year results available</p>
+    {% endif %}
+</div>
+
+<!-- Final Certificate -->
+<div class="glass-card p-6 text-center">
+    <h3 class="font-mono text-cyan-400 font-bold mb-4">🎓 Final Certificate</h3>
+    {% if completed_semesters %}
+    <button onclick="generateCert('final', 'all')" class="cyber-btn primary text-lg px-8 py-4">
+        Download Final Certificate<br>
+        <span class="text-xs opacity-80">All semesters, complete program summary</span>
+    </button>
+    {% else %}
+    <p class="text-gray-500 py-8 font-mono text-sm">No results available</p>
+    {% endif %}
+</div>
+
+<script>
+    function generateCert(type, value) {
+        const college = document.getElementById('college_name').value;
+        const father = document.getElementById('father_name').value;
+        const mother = document.getElementById('mother_name').value;
+        const dob = document.getElementById('dob').value;
+        let url = `/student/certificates/generate/${type}/${value}?`;
+        if (college) url += `college_name=${encodeURIComponent(college)}&`;
+        if (father) url += `father_name=${encodeURIComponent(father)}&`;
+        if (mother) url += `mother_name=${encodeURIComponent(mother)}&`;
+        if (dob) url += `dob=${encodeURIComponent(dob)}&`;
+        window.location.href = url;
+    }
+</script>
+
+{% endblock %}

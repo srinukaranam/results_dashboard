@@ -1,0 +1,52 @@
+{% extends "student/base_student.html" %}
+{% block title %}Notifications - {{ student.full_name }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold font-mono text-white mb-6">
+        <span class="text-cyan-400">&gt;</span> Notifications
+    </h1>
+
+    {% if notifications %}
+    <div class="space-y-3">
+        {% for notification in notifications %}
+        <div class="glass-card p-4 flex items-start justify-between 
+                    {% if not notification.is_read %}border-l-4 border-l-cyan-400{% endif %}">
+            <div>
+                <p class="text-gray-200 {% if not notification.is_read %}font-semibold{% endif %} text-sm">
+                    {{ notification.message }}
+                </p>
+                <p class="text-xs text-gray-500 mt-2 font-mono">
+                    {{ notification.created_at.strftime('%d %B %Y at %H:%M') }}
+                </p>
+            </div>
+            {% if not notification.is_read %}
+            <button onclick="markRead({{ notification.id }})" class="cyber-btn text-xs ml-4">
+                Mark Read
+            </button>
+            {% else %}
+            <span class="text-xs text-gray-600 font-mono ml-4">Read</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="glass-card p-12 text-center">
+        <div class="text-5xl mb-4">🔔</div>
+        <p class="text-gray-400 font-mono">No notifications yet</p>
+        <p class="text-gray-600 text-sm mt-2">You'll be notified when results are uploaded</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function markRead(id) {
+        fetch(`/student/notifications/${id}/read`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content }
+        }).then(() => location.reload());
+    }
+</script>
+
+{% endblock %}

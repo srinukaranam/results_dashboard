@@ -1,0 +1,45 @@
+ECHO is on.
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Environment variables
+.env
+
+# Database
+instance/
+*.db
+*.sqlite3
+
+# Uploads
+uploads/
+app/static/uploads/profiles/*
+
+# Keep the folder structure
+!app/static/uploads/profiles/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask
+*.log
+flask_session/
+
+# Migrations (optional - keep if you want to track schema)
+# migrations/

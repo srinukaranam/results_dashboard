@@ -1,0 +1,76 @@
+{% extends "student/base_student.html" %}
+{% block title %}Profile - {{ student.full_name }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold font-mono text-white mb-6">
+        <span class="text-cyan-400">&gt;</span> Edit Profile
+    </h1>
+
+    <div class="glass-card p-6">
+        <form method="POST" enctype="multipart/form-data" class="space-y-5">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <!-- Photo -->
+            <div class="text-center mb-6">
+                <div class="relative inline-block">
+                    {% if student.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/profiles/' + student.profile_photo) }}"
+                        class="w-20 h-20 rounded-full object-cover border-2 border-cyan-500">
+                    {% else %}
+                    <div
+                        class="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold border-2 border-cyan-500">
+                        {{ student.first_name[0] }}{{ student.last_name[0] }}
+                    </div>
+                    {% endif %}
+                    <label for="profile_photo"
+                        class="absolute bottom-0 right-0 bg-cyan-500 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-400 transition text-xs">📷</label>
+                    <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ student.first_name }}" required>
+                </div>
+                <div>
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ student.last_name }}" required>
+                </div>
+            </div>
+
+            <div>
+                <label>Email</label>
+                <input type="email" name="email" value="{{ student.email }}" required>
+            </div>
+
+            <div>
+                <label>Username</label>
+                <input type="text" name="username" value="{{ student.username or '' }}">
+            </div>
+
+            <div class="glass-card p-4 bg-cyan-500/5 border-cyan-500/20">
+                <label class="text-cyan-400">Hall Ticket (Read Only)</label>
+                <p class="font-mono text-lg text-white mt-1">{{ student.hall_ticket }}</p>
+            </div>
+
+            <div class="glass-card p-4 bg-cyan-500/5 border-cyan-500/20">
+                <label class="text-cyan-400">Branch & Year</label>
+                <p class="text-white mt-1">{{ student.branch }} • {{ student.admission_year }}</p>
+            </div>
+
+            <div>
+                <label>New Password (leave blank to keep)</label>
+                <input type="password" name="password" placeholder="Enter new password" minlength="8">
+            </div>
+
+            <button type="submit" class="cyber-btn primary w-full text-center text-lg py-3">
+                💾 Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
