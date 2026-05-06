@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from flask_login import UserMixin
-from app.extensions import db  # Changed from: from app import db
+from app.extensions import db
 import bcrypt
 
 
@@ -34,7 +34,14 @@ class Student(UserMixin, db.Model):
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
-    results = db.relationship("Result", backref="student", lazy=True)
+    # Relationships - using primaryjoin since no FK constraint
+    results = db.relationship(
+        "Result",
+        primaryjoin="Student.hall_ticket == foreign(Result.hall_ticket)",
+        backref="student",
+        lazy=True,
+        viewonly=True,
+    )
     notifications = db.relationship("Notification", backref="student", lazy=True)
 
     def set_password(self, password):
@@ -53,7 +60,7 @@ class Student(UserMixin, db.Model):
         return False
 
     def increment_failed_attempts(self):
-        self.failed_login_attempts += 1
+        self.failed_login_attempts = (self.failed_login_attempts or 0) + 1
         if self.failed_login_attempts >= 5:
             self.locked_until = datetime.utcnow() + timedelta(minutes=15)
 
@@ -83,6 +90,9 @@ class Admin(UserMixin, db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Relationship
+    uploads = db.relationship("PDFUpload", backref="admin", lazy=True)
+
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(
             password.encode("utf-8"), bcrypt.gensalt(12)
@@ -99,7 +109,7 @@ class Admin(UserMixin, db.Model):
         return False
 
     def increment_failed_attempts(self):
-        self.failed_login_attempts += 1
+        self.failed_login_attempts = (self.failed_login_attempts or 0) + 1
         if self.failed_login_attempts >= 5:
             self.locked_until = datetime.utcnow() + timedelta(minutes=15)
 
@@ -115,23 +125,25 @@ class Result(db.Model):
     __tablename__ = "results"
 
     id = db.Column(db.Integer, primary_key=True)
-    hall_ticket = db.Column(
-        db.String(20), db.ForeignKey("students.hall_ticket"), nullable=False
-    )
+    hall_ticket = db.Column(db.String(20), nullable=False, index=True)
     semester = db.Column(db.String(5), nullable=False)
-    subject_code = db.Column(db.String(10), nullable=False)
+    subject_code = db.Column(db.String(15), nullable=False)  # Increased for safety
     subject_name = db.Column(db.String(100))
-    credits = db.Column(db.Float)
-    grade = db.Column(db.String(5))
-    grade_points = db.Column(db.Float)
+    credits = db.Column(db.Numeric(3, 1))
+    grade = db.Column(db.String(10))  # Changed from 5 to 10 to fit "ABSENT"
+    grade_points = db.Column(db.Numeric(3, 1))
     is_supplementary = db.Column(db.Boolean, default=False)
-    is_supple_passed = db.Column(db.Boolean, default=False)  # ADD THIS: Star indicator
+    is_supple_passed = db.Column(db.Boolean, default=False)
     pdf_source = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (
         db.UniqueConstraint(
-            "hall_ticket", "semester", "subject_code", name="unique_result"
+            "hall_ticket",
+            "semester",
+            "subject_code",
+            "is_supplementary",
+            name="unique_result",
         ),
     )
 
@@ -171,5 +183,3 @@ class PDFUpload(db.Model):
     error_count = db.Column(db.Integer)
     status = db.Column(db.String(20), default="pending")
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    admin = db.relationship("Admin", backref="uploads")

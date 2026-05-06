@@ -1,19 +1,10 @@
-from app import create_app, db
-from app.models import Student, Admin, Result, Notification, AuditLog, PDFUpload
+from app import create_app
+import os
 
-app = create_app()
+# Get environment from FLASK_ENV, default to 'development'
+env = os.environ.get("FLASK_ENV", "development")
+app = create_app(env)
 
-@app.shell_context_processor
-def make_shell_context():
-    return {
-        'db': db,
-        'Student': Student,
-        'Admin': Admin,
-        'Result': Result,
-        'Notification': Notification,
-        'AuditLog': AuditLog,
-        'PDFUpload': PDFUpload
-    }
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    debug = os.environ.get("FLASK_DEBUG", "True").lower() == "true"
+    app.run(debug=debug, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: result-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "True"
+      - fromGroup: email-creds
+
+databases:
+  - name: result-dashboard-db
+    plan: free

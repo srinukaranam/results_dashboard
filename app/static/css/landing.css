@@ -295,3 +295,48 @@ body {
         transform: translateX(50%);
     }
 }
+
+/* ============ MOBILE IMPROVEMENTS ============ */
+@media (max-width: 640px) {
+
+    .btn-cyan,
+    .btn-blue {
+        padding: 14px 24px;
+        font-size: 15px;
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+
+    .cyber-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .tech-pill {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .section-divider {
+        margin: 15px auto 25px;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    #matrixCanvas {
+        opacity: 0.03;
+    }
+}
+
+/* Fix iOS input zoom */
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}

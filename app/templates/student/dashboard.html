@@ -504,89 +504,88 @@
 
     </main>
 
-    <!-- SINGLE CHART SCRIPT -->
-    {% if completed_semesters and completed_semesters|length > 0 %}
-    <script>
-        (function () {
-            const canvas = document.getElementById('miniSgpaChart');
-            if (!canvas) return;
+        <!-- SINGLE CHART SCRIPT -->
+        {% if completed_semesters and completed_semesters|length > 0 %}
+        <script>
+            (function () {
+                const canvas = document.getElementById('miniSgpaChart');
+                if (!canvas) return;
 
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, 'rgba(0, 212, 255, 0.2)');
-            gradient.addColorStop(1, 'rgba(0, 212, 255, 0)');
+                const ctx = canvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                gradient.addColorStop(0, 'rgba(0, 212, 255, 0.2)');
+                gradient.addColorStop(1, 'rgba(0, 212, 255, 0)');
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: {{ semester_labels| tojson }},
-        datasets: [{
-            label: 'SGPA',
-            data: {{ sgpa_values| tojson }},
-            borderColor: '#00D4FF',
-            backgroundColor: gradient,
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointBackgroundColor: '#00D4FF',
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            pointBorderColor: '#0F1923',
-            pointBorderWidth: 2
-                    }, {
-            label: 'CGPA',
-            data: {{ cgpa_values| tojson }},
-            borderColor: '#14B8A6',
-            borderWidth: 2,
-            borderDash: [6, 3],
-            tension: 0.4,
-            fill: false,
-            pointBackgroundColor: '#14B8A6',
-            pointRadius: 3,
-            pointHoverRadius: 5,
-            pointBorderColor: '#0F1923',
-            pointBorderWidth: 2
-                    }]
-                },
-        options: {
-            responsive: true,
-                maintainAspectRatio: false,
-                    plugins: {
-                legend: {
-                    position: 'bottom',
-                        labels: {
-                        color: '#94a3b8',
-                            font: { family: 'JetBrains Mono', size: 11 },
-                        usePointStyle: true,
-                            padding: 20
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ semester_labels| tojson }},
+            datasets: [{
+                label: 'SGPA',
+                data: {{ sgpa_values| tojson }},
+                borderColor: '#00D4FF',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#00D4FF',
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBorderColor: '#0F1923',
+                pointBorderWidth: 2
+                            }, {
+                label: 'CGPA',
+                data: {{ cgpa_values| tojson }},
+                borderColor: '#14B8A6',
+                borderWidth: 2,
+                borderDash: [6, 3],
+                tension: 0.4,
+                fill: false,
+                pointBackgroundColor: '#14B8A6',
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                pointBorderColor: '#0F1923',
+                pointBorderWidth: 2
+                            }]
+                        },
+            options: {
+                responsive: true,
+                    maintainAspectRatio: false,
+                        plugins: {
+                    legend: {
+                        position: 'bottom',
+                            labels: {
+                            color: '#94a3b8',
+                                font: { family: 'JetBrains Mono', size: 11 },
+                            usePointStyle: true,
+                                padding: 20
+                        }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    min: 0,
-                        max: 10,
-                            ticks: {
-                        stepSize: 1,
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                            max: 10,
+                                ticks: {
+                            stepSize: 1,
+                                color: '#94a3b8',
+                                    font: { family: 'JetBrains Mono', size: 11 }
+                        },
+                        grid: { color: 'rgba(148, 163, 184, 0.15)' }
+                    },
+                    x: {
+                        ticks: {
                             color: '#94a3b8',
                                 font: { family: 'JetBrains Mono', size: 11 }
-                    },
-                    grid: { color: 'rgba(148, 163, 184, 0.15)' }
-                },
-                x: {
-                    ticks: {
-                        color: '#94a3b8',
-                            font: { family: 'JetBrains Mono', size: 11 }
-                    },
-                    grid: { display: false }
+                        },
+                        grid: { display: false }
+                    }
                 }
             }
-        }
-            });
-        }) ();
-    </script>
-    {% endif %}
-
+                    });
+                }) ();
+        </script>
+        {% endif %}
 </body>
 
 </html>

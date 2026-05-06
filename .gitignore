@@ -1,4 +1,3 @@
-ECHO is on.
 # Virtual Environment
 venv/
 env/
@@ -23,8 +22,6 @@ instance/
 # Uploads
 uploads/
 app/static/uploads/profiles/*
-
-# Keep the folder structure
 !app/static/uploads/profiles/.gitkeep
 
 # IDE
@@ -41,5 +38,5 @@ Thumbs.db
 *.log
 flask_session/
 
-# Migrations (optional - keep if you want to track schema)
-# migrations/
+# Migrations
+migrations/

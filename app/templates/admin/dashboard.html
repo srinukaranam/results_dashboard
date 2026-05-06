@@ -1,72 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Result Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        @media (max-width: 640px) {
+
+            input,
+            select,
+            button {
+                font-size: 16px !important;
+            }
+        }
     </style>
 </head>
+
 <body class="bg-[#0F1923] min-h-screen">
-    
-    <header class="bg-[#1E293B] border-b border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-cyan-400 font-mono">🛡️ Admin Panel</h1>
-            <div class="flex items-center space-x-4">
-                <span class="text-gray-400 text-sm">{{ current_user.full_name }}</span>
-                <a href="/admin/uploads" class="text-cyan-400 hover:text-cyan-300 text-sm font-mono">📂 Uploads</a>
-                <a href="/admin/students" class="text-gray-400 hover:text-white text-sm">👥 Students</a>
-                <a href="/admin/logout" class="text-red-400 text-sm hover:text-red-300">Logout</a>
+
+    <!-- HEADER -->
+    <header class="bg-[#1E293B] border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-3 md:px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <h1 class="text-lg md:text-xl font-bold text-cyan-400 font-mono">🛡️ Admin</h1>
+                    <span class="hidden md:block text-gray-400 text-sm">{{ current_user.full_name }}</span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center space-x-3 lg:space-x-4">
+                    <a href="/admin/dashboard" class="text-cyan-400 font-mono text-xs lg:text-sm">Dashboard</a>
+                    <a href="/admin/uploads"
+                        class="text-gray-400 hover:text-white font-mono text-xs lg:text-sm">Uploads</a>
+                    <a href="/admin/students"
+                        class="text-gray-400 hover:text-white font-mono text-xs lg:text-sm">Students</a>
+                    <a href="/admin/audit-logs"
+                        class="text-gray-400 hover:text-white font-mono text-xs lg:text-sm">Logs</a>
+                    <a href="/admin/system-status"
+                        class="text-gray-400 hover:text-white font-mono text-xs lg:text-sm">System</a>
+                    <a href="/admin/logout"
+                        class="text-red-400 hover:text-red-300 font-mono text-xs lg:text-sm">Logout</a>
+                </nav>
+
+                <!-- Mobile Hamburger -->
+                <button id="menuBtn" class="md:hidden text-gray-400 hover:text-cyan-400 text-2xl focus:outline-none">
+                    ☰
+                </button>
+            </div>
+
+            <!-- Mobile Nav -->
+            <div id="mobileNav" class="hidden md:hidden mt-3 pt-3 border-t border-gray-700 space-y-2">
+                <a href="/admin/dashboard" class="block text-cyan-400 font-mono text-sm py-1">Dashboard</a>
+                <a href="/admin/uploads"
+                    class="block text-gray-400 hover:text-cyan-400 font-mono text-sm py-1">Uploads</a>
+                <a href="/admin/students"
+                    class="block text-gray-400 hover:text-cyan-400 font-mono text-sm py-1">Students</a>
+                <a href="/admin/audit-logs" class="block text-gray-400 hover:text-cyan-400 font-mono text-sm py-1">Audit
+                    Logs</a>
+                <a href="/admin/system-status"
+                    class="block text-gray-400 hover:text-cyan-400 font-mono text-sm py-1">System Status</a>
+                <a href="/admin/logout" class="block text-red-400 hover:text-red-300 font-mono text-sm py-1">Logout</a>
             </div>
         </div>
     </header>
-    
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-8">
+
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-teal-500/20 text-teal-400 border border-teal-500{% else %}bg-red-500/20 text-red-400 border border-red-500{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="mb-3 md:mb-4 p-3 md:p-4 rounded-lg text-sm {% if category == 'success' %}bg-teal-500/20 text-teal-400 border border-teal-500{% else %}bg-red-500/20 text-red-400 border border-red-500{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
-        
+
+        <!-- Quick Links -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
+            <a href="/admin/uploads"
+                class="bg-[#1E293B] rounded-xl p-3 md:p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
+                <span class="text-xl md:text-2xl">📂</span>
+                <p class="text-cyan-400 text-xs md:text-sm mt-1 md:mt-2 font-mono">Uploads</p>
+            </a>
+            <a href="/admin/students"
+                class="bg-[#1E293B] rounded-xl p-3 md:p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
+                <span class="text-xl md:text-2xl">👥</span>
+                <p class="text-cyan-400 text-xs md:text-sm mt-1 md:mt-2 font-mono">Students</p>
+            </a>
+            <a href="/admin/audit-logs"
+                class="bg-[#1E293B] rounded-xl p-3 md:p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
+                <span class="text-xl md:text-2xl">📋</span>
+                <p class="text-cyan-400 text-xs md:text-sm mt-1 md:mt-2 font-mono">Logs</p>
+            </a>
+            <a href="/admin/system-status"
+                class="bg-[#1E293B] rounded-xl p-3 md:p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
+                <span class="text-xl md:text-2xl">🖥️</span>
+                <p class="text-cyan-400 text-xs md:text-sm mt-1 md:mt-2 font-mono">System</p>
+            </a>
+        </div>
+
         <!-- Stats Bar -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-[#1E293B] rounded-xl p-6 border border-gray-700">
-                <p class="text-gray-400 text-sm">Total Students</p>
-                <p class="text-3xl font-bold text-white mt-2">{{ total_students }}</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 mb-4 md:mb-6">
+            <div class="bg-[#1E293B] rounded-xl p-3 md:p-6 border border-gray-700">
+                <p class="text-gray-400 text-xs md:text-sm">Students</p>
+                <p class="text-2xl md:text-3xl font-bold text-white mt-1 md:mt-2">{{ total_students }}</p>
             </div>
-            <div class="bg-[#1E293B] rounded-xl p-6 border border-gray-700">
-                <p class="text-gray-400 text-sm">Total Uploads</p>
-                <p class="text-3xl font-bold text-white mt-2">{{ total_uploads }}</p>
+            <div class="bg-[#1E293B] rounded-xl p-3 md:p-6 border border-gray-700">
+                <p class="text-gray-400 text-xs md:text-sm">Uploads</p>
+                <p class="text-2xl md:text-3xl font-bold text-white mt-1 md:mt-2">{{ total_uploads }}</p>
             </div>
-            <div class="bg-[#1E293B] rounded-xl p-6 border border-gray-700">
-                <p class="text-gray-400 text-sm">Latest Upload</p>
-                <p class="text-lg font-bold text-cyan-400 mt-2">
-                    {% if latest_upload %}{{ latest_upload.uploaded_at.strftime('%d %b, %H:%M') }}{% else %}None{% endif %}
+            <div class="bg-[#1E293B] rounded-xl p-3 md:p-6 border border-gray-700 col-span-2 md:col-span-1">
+                <p class="text-gray-400 text-xs md:text-sm">Latest</p>
+                <p class="text-base md:text-lg font-bold text-cyan-400 mt-1 md:mt-2">
+                    {% if latest_upload %}{{ latest_upload.uploaded_at.strftime('%d %b, %H:%M') }}{% else %}None{% endif
+                    %}
                 </p>
             </div>
         </div>
-        
+
         <!-- Upload Section -->
-        <div class="bg-[#1E293B] rounded-xl p-6 border border-gray-700 mb-8">
-            <h2 class="text-lg font-semibold text-white mb-4">📤 Upload JNTUK Result PDF</h2>
-            
-            <form method="POST" action="{{ url_for('admin.upload_pdf') }}" enctype="multipart/form-data" class="space-y-4">
+        <div class="bg-[#1E293B] rounded-xl p-4 md:p-6 border border-gray-700 mb-4 md:mb-8">
+            <h2 class="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">📤 Upload JNTUK Result PDF</h2>
+
+            <form method="POST" action="{{ url_for('admin.upload_pdf') }}" enctype="multipart/form-data"
+                class="space-y-3 md:space-y-4">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                
+
                 <div>
-                    <label class="block text-sm text-gray-300 mb-2">Semester</label>
-                    <select name="semester" required 
-                            class="w-full px-4 py-2 bg-[#0F1923] border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-cyan-500">
+                    <label class="block text-xs md:text-sm text-gray-300 mb-1 md:mb-2">Semester</label>
+                    <select name="semester" required
+                        class="w-full px-3 md:px-4 py-2 bg-[#0F1923] border border-gray-600 rounded-lg text-white text-sm focus:ring-2 focus:ring-cyan-500">
                         <option value="1-1">1-1 (First Year - Sem 1)</option>
                         <option value="1-2">1-2 (First Year - Sem 2)</option>
                         <option value="2-1">2-1 (Second Year - Sem 1)</option>
@@ -77,56 +157,56 @@
                         <option value="4-2">4-2 (Fourth Year - Sem 2)</option>
                     </select>
                 </div>
-                
+
                 <div>
-                    <label class="block text-sm text-gray-300 mb-2">Result PDF File</label>
-                    <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center hover:border-cyan-500 transition">
+                    <label class="block text-xs md:text-sm text-gray-300 mb-1 md:mb-2">Result PDF File</label>
+                    <div
+                        class="border-2 border-dashed border-gray-600 rounded-lg p-4 md:p-8 text-center hover:border-cyan-500 transition">
                         <input type="file" name="pdf_file" accept=".pdf" required
-                               class="w-full text-gray-400 file:mr-4 file:py-2 file:px-6 file:rounded-lg file:border-0 file:bg-cyan-600 file:text-white hover:file:bg-cyan-700">
-                        <p class="text-gray-500 text-sm mt-2">Upload JNTUK result PDF (max 50MB)</p>
+                            class="w-full text-xs md:text-sm text-gray-400 file:mr-2 md:file:mr-4 file:py-1 md:file:py-2 file:px-3 md:file:px-6 file:rounded-lg file:border-0 file:bg-cyan-600 file:text-white hover:file:bg-cyan-700">
+                        <p class="text-gray-500 text-xs md:text-sm mt-1 md:mt-2">Upload JNTUK result PDF (max 50MB)</p>
                     </div>
                 </div>
-                
-                <button type="submit" class="w-full bg-cyan-600 text-white py-3 rounded-lg hover:bg-cyan-700 transition font-medium text-lg">
+
+                <button type="submit"
+                    class="w-full bg-cyan-600 text-white py-2.5 md:py-3 rounded-lg hover:bg-cyan-700 transition font-medium text-sm md:text-lg">
                     Upload & Parse PDF
                 </button>
             </form>
         </div>
-        
-        <!-- Recent Uploads Table -->
-        <div class="bg-[#1E293B] rounded-xl p-6 border border-gray-700">
-            <h2 class="text-lg font-semibold text-white mb-4">📋 Recent Uploads</h2>
-            
+
+        <!-- Recent Uploads -->
+        <div class="bg-[#1E293B] rounded-xl p-4 md:p-6 border border-gray-700">
+            <h2 class="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">📋 Recent Uploads</h2>
+
             {% if recent_uploads %}
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
+            <div class="overflow-x-auto -mx-4 md:mx-0">
+                <table class="w-full min-w-[550px] text-left">
                     <thead>
-                        <tr class="border-b border-gray-700 text-gray-400 text-sm">
-                            <th class="py-3 px-4">Filename</th>
-                            <th class="py-3 px-4">Uploaded</th>
-                            <th class="py-3 px-4">Total</th>
-                            <th class="py-3 px-4">Success</th>
-                            <th class="py-3 px-4">Errors</th>
-                            <th class="py-3 px-4">Status</th>
+                        <tr class="border-b border-gray-700 text-gray-400 text-xs md:text-sm">
+                            <th class="py-2 md:py-3 px-2 md:px-4">Filename</th>
+                            <th class="py-2 md:py-3 px-2 md:px-4">Uploaded</th>
+                            <th class="py-2 md:py-3 px-2 md:px-4">Total</th>
+                            <th class="py-2 md:py-3 px-2 md:px-4">Success</th>
+                            <th class="py-2 md:py-3 px-2 md:px-4">Errors</th>
+                            <th class="py-2 md:py-3 px-2 md:px-4">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for upload in recent_uploads %}
-                        <tr class="border-b border-gray-800 text-gray-300">
-                            <td class="py-3 px-4 text-cyan-400">{{ upload.filename }}</td>
-                            <td class="py-3 px-4 text-sm">{{ upload.uploaded_at.strftime('%d/%m %H:%M') }}</td>
-                            <td class="py-3 px-4">{{ upload.total_rows or '-' }}</td>
-                            <td class="py-3 px-4 text-teal-400">{{ upload.success_count or '-' }}</td>
-                            <td class="py-3 px-4 text-red-400">{{ upload.error_count or '-' }}</td>
-                            <td class="py-3 px-4">
+                        <tr class="border-b border-gray-800 text-gray-300 text-xs md:text-sm">
+                            <td class="py-2 md:py-3 px-2 md:px-4 text-cyan-400">{{ upload.filename }}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4">{{ upload.uploaded_at.strftime('%d/%m %H:%M') }}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4">{{ upload.total_rows or '-' }}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4 text-teal-400">{{ upload.success_count or '-' }}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4 text-red-400">{{ upload.error_count or '-' }}</td>
+                            <td class="py-2 md:py-3 px-2 md:px-4">
                                 {% if upload.status == 'done' %}
-                                    <span class="text-teal-400">✅ Done</span>
+                                <span class="text-teal-400">✅</span>
                                 {% elif upload.status == 'done_with_errors' %}
-                                    <span class="text-amber-400">⚠️ Partial</span>
-                                {% elif upload.status == 'processing' %}
-                                    <span class="text-blue-400">🔄 Processing</span>
+                                <span class="text-amber-400">⚠️</span>
                                 {% else %}
-                                    <span class="text-red-400">❌ Failed</span>
+                                <span class="text-red-400">❌</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -134,38 +214,18 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Quick Links -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <a href="/admin/uploads"
-                    class="bg-[#1E293B] rounded-xl p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
-                    <span class="text-2xl">📂</span>
-                    <p class="text-cyan-400 text-sm mt-2 font-mono">Manage Uploads</p>
-                </a>
-                <a href="/admin/students"
-                    class="bg-[#1E293B] rounded-xl p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
-                    <span class="text-2xl">👥</span>
-                    <p class="text-cyan-400 text-sm mt-2 font-mono">Students</p>
-                </a>
-                <a href="/admin/audit-logs"
-                    class="bg-[#1E293B] rounded-xl p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
-                    <span class="text-2xl">📋</span>
-                    <p class="text-cyan-400 text-sm mt-2 font-mono">Audit Logs</p>
-                </a>
-                <a href="/admin/system-status"
-                    class="bg-[#1E293B] rounded-xl p-4 border border-gray-700 hover:border-cyan-500 transition text-center">
-                    <span class="text-2xl">🖥️</span>
-                    <p class="text-cyan-400 text-sm mt-2 font-mono">System Status</p>
-                </a>
-            </div>
-
-
             {% else %}
-            <p class="text-gray-400 text-center py-8">No uploads yet.</p>
+            <p class="text-gray-400 text-center py-6 md:py-8 text-sm">No uploads yet.</p>
             {% endif %}
         </div>
-        
+
     </main>
 
+    <script>
+        document.getElementById('menuBtn').addEventListener('click', function () {
+            document.getElementById('mobileNav').classList.toggle('hidden');
+        });
+    </script>
 </body>
+
 </html>
