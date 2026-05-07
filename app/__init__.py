@@ -112,4 +112,26 @@ def create_app(config_name="default"):
             "PDFUpload": PDFUpload,
         }
 
+    # TEMPORARY: Setup route for Render free tier
+    @app.route("/setup-db")
+    def setup_db():
+        try:
+            db.create_all()
+            from app.models import Admin
+
+            admin = Admin.query.filter_by(email="srinukaranam2104@gmail.com").first()
+            if not admin:
+                admin = Admin(
+                    email="srinukaranam2104@gmail.com", full_name="Administrator"
+                )
+                admin.set_password("Admin@524")
+                db.session.add(admin)
+                db.session.commit()
+                return (
+                    "✅ Tables created! Admin: srinukaranam2104@gmail.com / Admin@524"
+                )
+            return "✅ Tables already exist!"
+        except Exception as e:
+            return f"❌ Error: {str(e)}"
+
     return app
