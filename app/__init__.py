@@ -134,4 +134,16 @@ def create_app(config_name="default"):
         except Exception as e:
             return f"❌ Error: {str(e)}"
 
+    @app.route("/debug-db")
+    def debug_db():
+
+        db_url = os.environ.get("DATABASE_URL", "NOT SET")
+        # Hide password
+        if "@" in db_url:
+            parts = db_url.split("@")
+            safe_url = parts[0].split(":")[0] + ":***@" + parts[1]
+        else:
+            safe_url = db_url
+        return f"DATABASE_URL: {safe_url}"
+
     return app
